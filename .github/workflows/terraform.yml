@@ -12,6 +12,7 @@ jobs:
   ci:
     name: ci
     runs-on: ubuntu-20.04
+    if: github.ref != 'refs/heads/main'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -87,10 +88,9 @@ jobs:
           name: app.zip
           path: dist/app.zip
 
-  cd:
-    name: cd
+  staging:
+    name: staging
     runs-on: ubuntu-20.04
-    needs: ci
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment: staging
     steps:
@@ -113,16 +113,44 @@ jobs:
         id: init
         run: make terraform-init WORKSPACE=staging
 
-      - name: Download Plan Artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: terraform.plan
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -var-file staging.tfvars -out terraform.plan
 
-      - name: Download Application zip
-        uses: actions/download-artifact@v2
+      - name: Terraform Apply
+        run: terraform apply -auto-approve terraform.plan
+
+      - name: Beanstalk Deploy
+        run: make deploy
+
+  production:
+    name: production
+    runs-on: ubuntu-20.04
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Terraform Setup
+        uses: hashicorp/setup-terraform@v1
         with:
-          name: app.zip
-          path: dist/app.zip
+          terraform_version: 0.14.8
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ca-central-1
+
+      - name: Terraform Init
+        id: init
+        run: make terraform-init WORKSPACE=production
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -var-file production.tfvars -out terraform.plan
 
       - name: Terraform Apply
         run: terraform apply -auto-approve terraform.plan

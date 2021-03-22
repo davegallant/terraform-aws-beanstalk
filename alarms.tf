@@ -50,6 +50,6 @@ data "template_file" "aws_cf_sns_stack" {
 }
 
 resource "aws_cloudformation_stack" "tf_sns_topic_subscription" {
-  name          = "snsStack"
+  name          = "${terraform.workspace}-snsStack"
   template_body = data.template_file.aws_cf_sns_stack.rendered
 }

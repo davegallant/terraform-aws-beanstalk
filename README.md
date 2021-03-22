@@ -1,6 +1,7 @@
 # Terraform AWS Elastic Beanstalk Hello World
 
 <!-- BEGIN mktoc -->
+
 - [Description](#description)
 - [Limitations / Omissions](#limitations--omissions)
 - [Setup](#setup)
@@ -10,9 +11,9 @@
     - [DynamoDB Table](#dynamodb-table)
   - [Apply Resources](#apply-resources)
   - [Deploy](#deploy)
-- [Destroy](#destroy)
-- [CI](#ci)
-- [CD](#cd)
+  - [Destroy](#destroy)
+- [Continuous Integration (CI)](#continuous-integration-ci)
+- [Continuous Delivery (CD)](#continuous-delivery-cd)
 <!-- END mktoc -->
 
 ## Description
@@ -111,22 +112,26 @@ For additional targets, run `make help`.
 make deploy REGION=ca-central-1
 ```
 
-## Destroy
+### Destroy
 
-To destroy all resources, run:
+To destroy all resources (and save money), run:
 
 ```sh
 make terraform-destroy TF_VAR_FILE=staging.tfvars
 ```
 
-## CI
+## Continuous Integration (CI)
 
-This repo is setup with branch protections on `main`.
+CI leverages GitHub Actions. The workflow is defined in [terraform.yml](./.github/workflows/terraform.yml)
 
-All PRs require the `ci` GitHub Action steps to pass.
+There are branch protections on `main`.
 
-## CD
+All PRs require the `ci` GitHub Action steps to pass before merging.
 
-When a PR is merged into `main`, deployments to `staging` and `production` kick off sequentially.
+## Continuous Delivery (CD)
 
-The `production` environment requires a reviewer to sign off on the deployment.
+CD also leverages the same GitHub Actions workflow as CI.
+
+When a PR is merged into `main`, deployments to `staging` and `production` will kick off sequentially.
+
+The `production` environment requires a reviewer to sign off before the deployment occurs.

@@ -120,8 +120,16 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve terraform.plan
 
+      - name: Get Beanstalk Environment
+        run: terraform output -raw env_name
+        id: env_name
+
+      - name: Get Beanstalk App Version
+        run: terraform output -raw app_version
+        id: app_version
+
       - name: Beanstalk Deploy
-        run: make deploy
+        run: aws --region ca-central-1 elasticbeanstalk update-environment --environment-name  ${{ steps.env_name.outputs.stdout }}--version-label ${{ steps.app_version.outputs.stdout }}
 
   production:
     name: production
@@ -155,5 +163,13 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve terraform.plan
 
+      - name: Get Beanstalk Environment
+        run: terraform output -raw env_name
+        id: env_name
+
+      - name: Get Beanstalk App Version
+        run: terraform output -raw app_version
+        id: app_version
+
       - name: Beanstalk Deploy
-        run: make deploy
+        run: aws --region ca-central-1 elasticbeanstalk update-environment --environment-name ${{ steps.env_name.outputs.stdout }}--version-label ${{ steps.app_version.outputs.stdout }}

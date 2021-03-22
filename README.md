@@ -19,7 +19,7 @@
 
 ## Description
 
-This is a sample app the deploys a hello world application to [AWS Elastic Beanstalk](https://aws.amazon.com/elasticbeanstalk/), with its resources managed by terraform.
+This is a sample repo the deploys a hello world application to [AWS Elastic Beanstalk](https://aws.amazon.com/elasticbeanstalk/), with its resources managed by terraform.
 
 This can be deployed entirely with [AWS Free Tier](https://aws.amazon.com/free/).
 
@@ -58,7 +58,7 @@ To store the state of terraform in a safe, remote place, a backend is required. 
 
 #### S3 Bucket
 
-Create an S3 bucket to store the terraform state files.
+Create an S3 bucket to store the terraform state files:
 
 ```sh
 export BUCKET=terraform-state-eb-hello-world # this needs to be globally unique
@@ -73,7 +73,7 @@ aws s3api put-bucket-versioning --bucket $BUCKET --versioning-configuration Stat
 
 #### DynamoDB Table
 
-Create a DynamoDB Table that terraform will use for state locking
+Create a DynamoDB Table that terraform will use for state locking:
 
 ```sh
 export REGION=ca-central-1
@@ -123,7 +123,7 @@ make terraform-destroy TF_VAR_FILE=staging.tfvars
 
 ## Continuous Integration (CI)
 
-CI leverages GitHub Actions. The workflow is defined in [terraform.yml](./.github/workflows/terraform.yml)
+CI leverages GitHub Actions. The workflow is defined in [terraform.yml](./.github/workflows/terraform.yml).
 
 There are branch protections on `main`.
 

@@ -51,9 +51,10 @@ endif
 .PHONY: terraform-workspace
 
 ## terraform-init: Initialize the terraform workspace and remote state
-terraform-init: terraform-workspace
-> terraform workspace select $(WORKSPACE)
+terraform-init:
 > terraform init -backend-config $(TF_BACKEND_CONFIG)
+> $(MAKE) terraform-workspace WORKSPACE=$(WORKSPACE)
+> terraform workspace select $(WORKSPACE)
 .PHONY: terraform-init
 
 ## terraform-plan: Check what resources have changed

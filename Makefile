@@ -74,7 +74,7 @@ terraform-destroy:
 
 ## deploy: Deploy the latest version of the beanstalk app
 deploy:
-> aws --region $(REGION) elasticbeanstalk update-environment --environment-name $$(terraform output -raw env_name) --version-label $$(terraform output -raw app_version)
+> aws --region $(REGION) elasticbeanstalk update-environment --environment-name "$$(terraform output -raw env_name)" --version-label "$$(terraform output -raw app_version)"
 .PHONY: deploy
 
 ## precommit: Run all pre-commit hooks

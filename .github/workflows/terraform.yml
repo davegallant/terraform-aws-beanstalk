@@ -80,6 +80,13 @@ jobs:
           name: terraform.plan
           path: terraform.plan
 
+      - name: Upload Application zip
+        uses: actions/upload-artifact@v1
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        with:
+          name: app.zip
+          path: dist/app.zip
+
   cd:
     name: cd
     runs-on: ubuntu-20.04
@@ -110,6 +117,12 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: terraform.plan
+
+      - name: Download Application zip
+        uses: actions/download-artifact@v2
+        with:
+          name: app.zip
+          path: dist/app.zip
 
       - name: Terraform Apply
         run: terraform apply -auto-approve terraform.plan

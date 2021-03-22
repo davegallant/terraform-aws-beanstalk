@@ -133,6 +133,7 @@ jobs:
 
   production:
     name: production
+    needs: staging
     runs-on: ubuntu-20.04
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment: production

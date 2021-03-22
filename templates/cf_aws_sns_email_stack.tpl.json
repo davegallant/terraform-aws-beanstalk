@@ -1,0 +1,13 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Resources": {
+    "EmailSNSTopicSubscription": {
+      "Type": "AWS::SNS::Subscription",
+      "Properties": {
+        "Endpoint": "${sns_subscription_list}",
+        "Protocol": "email",
+        "TopicArn": "${sns_topic_arn}"
+      }
+    }
+  }
+}

@@ -1,7 +1,6 @@
 # Terraform AWS Elastic Beanstalk Hello World
 
 <!-- BEGIN mktoc -->
-
 - [Description](#description)
 - [Limitations / Omissions](#limitations--omissions)
 - [Setup](#setup)
@@ -12,7 +11,8 @@
   - [Apply Resources](#apply-resources)
   - [Deploy](#deploy)
 - [Destroy](#destroy)
-- [CI/CD](#ci-cd)
+- [CI](#ci)
+- [CD](#cd)
 <!-- END mktoc -->
 
 ## Description
@@ -119,11 +119,13 @@ To destroy all resources, run:
 make terraform-destroy TF_VAR_FILE=staging.tfvars
 ```
 
-## CI/CD
+## CI
 
 This repo is setup with branch protections on `main`.
 
 All PRs require the `ci` GitHub Action steps to pass.
+
+## CD
 
 When a PR is merged into `main`, deployments to `staging` and `production` kick off sequentially.
 

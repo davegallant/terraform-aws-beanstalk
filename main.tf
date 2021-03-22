@@ -33,9 +33,10 @@ resource "aws_elastic_beanstalk_application_version" "this" {
 }
 
 resource "aws_elastic_beanstalk_environment" "this" {
-  name                = local.application_name
-  description         = "An environment for a hello world webserver"
   application         = aws_elastic_beanstalk_application.app.name
+  depends_on          = [aws_s3_bucket_object.dist_item]
+  description         = "An environment for a hello world webserver"
+  name                = local.application_name
   solution_stack_name = "64bit Amazon Linux 2 v3.2.0 running Python 3.8"
   tier                = "WebServer"
 

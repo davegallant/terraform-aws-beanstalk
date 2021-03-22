@@ -69,6 +69,9 @@ aws s3 mb s3://$BUCKET --region $REGION
 
 # Enable Bucket Versioning to allow for state recovery in the case of accidental deletions and human error
 aws s3api put-bucket-versioning --bucket $BUCKET --versioning-configuration Status=Enabled
+
+# Update the backend tfvars with the newly created bucket name
+sed -i "s/bucket.*= \".*\"/bucket         = \"$BUCKET\"/g" backends/*.tfvars
 ```
 
 #### DynamoDB Table

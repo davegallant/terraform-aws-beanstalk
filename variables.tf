@@ -14,6 +14,7 @@ variable "application" {
     port    = 80
   }
 }
+
 variable "domain_name" {
   description = "The name of the domain to use"
   type        = string

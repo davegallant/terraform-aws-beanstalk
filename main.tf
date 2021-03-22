@@ -13,6 +13,7 @@ resource "aws_s3_bucket" "dist_bucket" {
   bucket = "${terraform.workspace}-elb-dist"
   acl    = "private"
 }
+
 resource "aws_s3_bucket_object" "dist_item" {
   key    = "${terraform.workspace}/dist-${uuid()}"
   bucket = aws_s3_bucket.dist_bucket.id
@@ -59,11 +60,13 @@ resource "aws_elastic_beanstalk_environment" "this" {
     namespace = "aws:autoscaling:asg"
     value     = var.autoscaling.max_size
   }
+
   setting {
     name      = "MinSize"
     namespace = "aws:autoscaling:asg"
     value     = var.autoscaling.min_size
   }
+
   setting {
     name      = "BreachDuration"
     namespace = "aws:autoscaling:trigger"

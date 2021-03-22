@@ -37,7 +37,7 @@ container-run: container-build
   $(DOCKER_IMAGE)
 .PHONY: container-run
 
-## terraform-workspace: Switch to a terraform workspace
+## terraform-workspace: Select the specified terraform workspace
 terraform-workspace:
 ifndef WORKSPACE
 > @echo "ERROR: 'WORKSPACE' variable unset!" && exit 1
@@ -50,7 +50,7 @@ endif
   fi
 .PHONY: terraform-workspace
 
-## terraform-init: Initialize the terraform workspace and remote state
+## terraform-init: Initialize the remote state and switch to the specified workspace
 terraform-init:
 > terraform init -backend-config $(TF_BACKEND_CONFIG)
 > $(MAKE) terraform-workspace WORKSPACE=$(WORKSPACE)
@@ -68,9 +68,9 @@ terraform-apply:
 .PHONY: terraform-apply
 
 ## terraform-destroy: Destroy all terraform resources
-.PHONY: terraform-destroy
-> terraform destroy -var-file $(TF_VAR_FILE)
 terraform-destroy:
+> terraform destroy -var-file $(TF_VAR_FILE)
+.PHONY: terraform-destroy
 
 ## deploy: Deploy the latest version of the beanstalk app
 deploy:

@@ -14,6 +14,7 @@
   - [Destroy](#destroy)
 - [Continuous Integration (CI)](#continuous-integration-ci)
 - [Continuous Delivery (CD)](#continuous-delivery-cd)
+- [Monitoring](#monitoring)
 <!-- END mktoc -->
 
 ## Description
@@ -128,6 +129,12 @@ There are branch protections on `main`.
 
 All PRs require the `ci` GitHub Action steps to pass before merging.
 
+These `ci` steps confirm:
+
+- terraform code is formatted consistently
+- terraform can be validated successfully
+- terraform can be planned against staging successfully
+
 ## Continuous Delivery (CD)
 
 CD also leverages the same GitHub Actions workflow as CI.
@@ -135,3 +142,9 @@ CD also leverages the same GitHub Actions workflow as CI.
 When a PR is merged into `main`, deployments to `staging` and `production` will kick off sequentially.
 
 The `production` environment requires a reviewer to sign off before the deployment occurs.
+
+## Monitoring
+
+This web service can be monitored using the Elastic Beanstalk Monitoring tab, which by default includes average latency of requests, CPU utilization, and environment health codes.
+
+There is a terraform variable `enable_enhanced_reporting_enabled` that enables [Enhanced health reporting and monitoring](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/health-enhanced.html). By default, enhanced reporting is disabled.

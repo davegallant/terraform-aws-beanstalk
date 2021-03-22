@@ -129,7 +129,7 @@ jobs:
         id: app_version
 
       - name: Beanstalk Deploy
-        run: aws --region ca-central-1 elasticbeanstalk update-environment --environment-name  ${{ steps.env_name.outputs.stdout }}--version-label ${{ steps.app_version.outputs.stdout }}
+        run: aws --region ca-central-1 elasticbeanstalk update-environment --environment-name ${{ steps.env_name.outputs.stdout }} --version-label ${{ steps.app_version.outputs.stdout }}
 
   production:
     name: production
@@ -172,4 +172,4 @@ jobs:
         id: app_version
 
       - name: Beanstalk Deploy
-        run: aws --region ca-central-1 elasticbeanstalk update-environment --environment-name ${{ steps.env_name.outputs.stdout }}--version-label ${{ steps.app_version.outputs.stdout }}
+        run: aws --region ca-central-1 elasticbeanstalk update-environment --environment-name ${{ steps.env_name.outputs.stdout }} --version-label ${{ steps.app_version.outputs.stdout }}

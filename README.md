@@ -1,6 +1,7 @@
 # Terraform AWS Elastic Beanstalk Hello World
 
 <!-- BEGIN mktoc -->
+
 - [Description](#description)
 - [Limitations / Omissions](#limitations--omissions)
 - [Setup](#setup)
@@ -11,7 +12,7 @@
   - [Apply Resources](#apply-resources)
   - [Deploy](#deploy)
 - [Destroy](#destroy)
-- [CI /CD](#ci-cd)
+- [CI/CD](#ci-cd)
 <!-- END mktoc -->
 
 ## Description
@@ -118,7 +119,7 @@ To destroy all resources, run:
 make terraform-destroy TF_VAR_FILE=staging.tfvars
 ```
 
-## CI /CD
+## CI/CD
 
 This repo is setup with branch protections on `main`.
 

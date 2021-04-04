@@ -19,7 +19,8 @@ RUN amazon-linux-extras enable ${PYTHON_VERSION} && \
   ln -sf ${PYTHON_VERSION}-config python3-config && \
   python3 -m pip install --no-cache --upgrade \
   pip==21.0.1 \
-  pre-commit==2.11.1
+  pre-commit==2.11.1 \
+  pipenv==2020.11.15
 
 RUN adduser terraform
 

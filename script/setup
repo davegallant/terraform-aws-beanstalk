@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+set -euxo pipefail
+
+dependencies=(pre-commit terraform)
+
+check_dependency() {
+	local dependency=$1
+	if ! command -v "$dependency" &>/dev/null; then
+		echo "missing"
+	fi
+}
+
+dependency_error_msg() {
+	local dependency=$1
+  set +x
+	echo -e '\033[0;31m'
+	echo "ERROR: Unable to complete setup. Missing dependency: $dependency"
+	echo -e '\033[0m'
+  set -x
+}
+
+for d in "${dependencies[@]}"; do
+	ret=$(check_dependency "$d")
+	if [ "$ret" = "missing" ]; then
+		dependency_error_msg "$d"
+		exit 1
+	fi
+done
+
+pre-commit install
+
+backend_config="${TF_BACKEND_CONFIG:-backends/staging.tfvars}"
+workspace="${WORKSPACE:-staging}"
+
+terraform init -backend-config "$backend_config"
+
+if terraform workspace list | grep -E "^\*?[ ]*$workspace\$\$"; then
+	echo -e "Workspace '$workspace' already exists. Switching."
+	terraform workspace select "$workspace"
+else
+	terraform workspace new "$workspace"
+fi

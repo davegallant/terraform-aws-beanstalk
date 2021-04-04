@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -euxo pipefail
+
+region="${REGION:-ca-central-1}"
+
+tf_var_file="${TF_VAR_FILE:-staging.tfvars}"
+
+terraform apply -var-file "$tf_var_file" -lock
+
+aws --region "$region" elasticbeanstalk update-environment --environment-name "$(terraform output -raw env_name)" --version-label "$(terraform output -raw app_version)"

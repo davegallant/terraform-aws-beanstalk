@@ -1,15 +1,14 @@
 # Terraform AWS Elastic Beanstalk Hello World
 
 <!-- BEGIN mktoc -->
-
 - [Description](#description)
 - [Limitations / Omissions](#limitations--omissions)
-- [Setup](#setup)
-  - [Requirements](#requirements)
-  - [Terraform Backend](#terraform-backend)
-    - [S3 Bucket](#s3-bucket)
-    - [DynamoDB Table](#dynamodb-table)
-  - [Apply Resources](#apply-resources)
+- [Requirements](#requirements)
+- [Terraform Backend](#terraform-backend)
+  - [S3 Bucket](#s3-bucket)
+  - [DynamoDB Table](#dynamodb-table)
+- [Scripts](#scripts)
+  - [Setup](#setup)
   - [Deploy](#deploy)
   - [Destroy](#destroy)
 - [Continuous Integration (CI)](#continuous-integration-ci)
@@ -41,22 +40,20 @@ The following is deployed:
 - There is a lack of customization in the terraform variables (This could easily be remedied by adding additional variables in [variables.tf](./variables.tf))
 - The Beanstalk URL is currently wide open (ideally this should be inaccessible from the public internet)
 
-## Setup
 
-### Requirements
+## Requirements
 
 > :information_source: If you do not have the following dependencies, `make` and `docker` are enough to enter the container. Run `make container-run` to enter into an environment that has all necessary dependencies.
 
 - AWS CLI
-- GNU Make >= 3.8
 - Terraform >= 0.14
 - Python >= 3.8
 
-### Terraform Backend
+## Terraform Backend
 
 To store the state of terraform in a safe, remote place, a backend is required. An [S3 backend](https://www.terraform.io/docs/language/settings/backends/s3.html) is fairly simple to setup.
 
-#### S3 Bucket
+### S3 Bucket
 
 Create an S3 bucket to store the terraform state files:
 
@@ -74,7 +71,7 @@ aws s3api put-bucket-versioning --bucket $BUCKET --versioning-configuration Stat
 sed -i "s/bucket.*= \".*\"/bucket         = \"$BUCKET\"/g" backends/*.tfvars
 ```
 
-#### DynamoDB Table
+### DynamoDB Table
 
 Create a DynamoDB Table that terraform will use for state locking:
 
@@ -88,9 +85,11 @@ aws dynamodb --region $REGION create-table \
   --billing-mode PAY_PER_REQUEST
 ```
 
-### Apply Resources
+## Scripts
 
-These variables are used within the Makefile and can be overridden:
+Common [boilerplate scripts](https://github.com/github/scripts-to-rule-them-all#scripts-to-rule-them-all) are used to encourage a normalized script pattern across projects.
+
+These variables can be used to override script defaults:
 
 | VARIABLE          | DESCRIPTION                                         |
 | ----------------- | --------------------------------------------------- |
@@ -99,21 +98,20 @@ These variables are used within the Makefile and can be overridden:
 | TF_VAR_FILE       | Path to the terraform variables file                |
 | WORKSPACE         | Terraform workspace to use                          |
 
-To apply the resources, run:
+### Setup
+
+To setup the workspace and backend, run:
 
 ```sh
-make terraform-init WORKSPACE=staging
-
-make terraform-apply WORKSPACE=staging
+WORKSPACE=staging ./script/setup
 ```
-
-For additional targets, run `make help`.
 
 ### Deploy
 
 ```sh
-# Use the awscli to deploy the latest version of the app
-make deploy REGION=ca-central-1
+# Use terraform to apply resources and
+# the awscli to deploy the latest version of the app
+REGION=ca-central-1 TF_VAR_FILE=staging.tfvars WORKSPACE=staging ./script/deploy
 ```
 
 ### Destroy
@@ -121,7 +119,7 @@ make deploy REGION=ca-central-1
 To destroy all resources (and save money), run:
 
 ```sh
-make terraform-destroy TF_VAR_FILE=staging.tfvars
+TF_VAR_FILE=staging.tfvars ./script/destroy
 ```
 
 ## Continuous Integration (CI)

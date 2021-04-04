@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -euxo pipefail
+
+tf_var_file="${TF_VAR_FILE:-staging.tfvars}"
+
+terraform destroy -var-file "$tf_var_file"

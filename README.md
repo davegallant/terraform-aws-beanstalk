@@ -40,7 +40,6 @@ The following is deployed:
 - There is a lack of customization in the terraform variables (This could easily be remedied by adding additional variables in [variables.tf](./variables.tf))
 - The Beanstalk URL is currently wide open (ideally this should be inaccessible from the public internet)
 
-
 ## Requirements
 
 > :information_source: If you do not have the following dependencies, `make` and `docker` are enough to enter the container. Run `make container-run` to enter into an environment that has all necessary dependencies.
@@ -96,14 +95,14 @@ These variables can be used to override script defaults:
 | REGION            | AWS region to deploy into. Defaults to ca-central-1 |
 | TF_BACKEND_CONFIG | Path to the backend variables file                  |
 | TF_VAR_FILE       | Path to the terraform variables file                |
-| WORKSPACE         | Terraform workspace to use                          |
+| TF_WORKSPACE      | Terraform workspace to use                          |
 
 ### Setup
 
 To setup the workspace and backend, run:
 
 ```sh
-WORKSPACE=staging ./script/setup
+TF_WORKSPACE=staging ./script/setup
 ```
 
 ### Deploy
@@ -111,7 +110,7 @@ WORKSPACE=staging ./script/setup
 ```sh
 # Use terraform to apply resources and
 # the awscli to deploy the latest version of the app
-REGION=ca-central-1 TF_VAR_FILE=staging.tfvars WORKSPACE=staging ./script/deploy
+REGION=ca-central-1 TF_VAR_FILE=staging.tfvars TF_WORKSPACE=staging ./script/deploy
 ```
 
 ### Destroy
@@ -119,7 +118,7 @@ REGION=ca-central-1 TF_VAR_FILE=staging.tfvars WORKSPACE=staging ./script/deploy
 To destroy all resources (and save money), run:
 
 ```sh
-TF_VAR_FILE=staging.tfvars ./script/destroy
+TF_WORKSPACE=staging TF_VAR_FILE=staging.tfvars ./script/destroy
 ```
 
 ## Continuous Integration (CI)

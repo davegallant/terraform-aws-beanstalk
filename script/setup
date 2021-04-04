@@ -13,11 +13,11 @@ check_dependency() {
 
 dependency_error_msg() {
 	local dependency=$1
-  set +x
+	set +x
 	echo -e '\033[0;31m'
 	echo "ERROR: Unable to complete setup. Missing dependency: $dependency"
 	echo -e '\033[0m'
-  set -x
+	set -x
 }
 
 for d in "${dependencies[@]}"; do
@@ -31,13 +31,5 @@ done
 pre-commit install
 
 backend_config="${TF_BACKEND_CONFIG:-backends/staging.tfvars}"
-workspace="${WORKSPACE:-staging}"
 
 terraform init -backend-config "$backend_config"
-
-if terraform workspace list | grep -E "^\*?[ ]*$workspace\$\$"; then
-	echo -e "Workspace '$workspace' already exists. Switching."
-	terraform workspace select "$workspace"
-else
-	terraform workspace new "$workspace"
-fi

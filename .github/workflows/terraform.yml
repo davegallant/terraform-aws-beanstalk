@@ -13,6 +13,8 @@ jobs:
     name: ci
     runs-on: ubuntu-20.04
     if: github.ref != 'refs/heads/main'
+    env:
+      TF_WORKSPACE: staging
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -35,14 +37,14 @@ jobs:
 
       - name: Terraform Init
         id: init
-        run: terraform init -backend-config backends/staging.tfvars
+        run: terraform init -backend-config backends/${{ env.TF_WORKSPACE }}.tfvars
 
       - name: Terraform Validate
         run: terraform validate
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -no-color -var-file staging.tfvars -out terraform.plan
+        run: terraform plan -no-color -var-file ${{ env.TF_WORKSPACE }}.tfvars -out terraform.plan
         continue-on-error: true
 
       - name: Update Pull Request
@@ -93,6 +95,8 @@ jobs:
     runs-on: ubuntu-20.04
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment: staging
+    env:
+      TF_WORKSPACE: staging
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -111,14 +115,10 @@ jobs:
 
       - name: Terraform Init
         id: init
-        run: terraform init -backend-config backends/staging.tfvars
-
-      - name: Terraform Plan
-        id: plan
-        run: terraform plan -var-file staging.tfvars -out terraform.plan
+        run: terraform init -backend-config backends/${{ env.TF_WORKSPACE }}.tfvars
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve terraform.plan
+        run: terraform apply -var-file ${{ env.TF_WORKSPACE }}.tfvars -auto-approve
 
       - name: Get Beanstalk Environment
         run: terraform output -raw env_name
@@ -137,6 +137,8 @@ jobs:
     runs-on: ubuntu-20.04
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment: production
+    env:
+      TF_WORKSPACE: production
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -155,14 +157,10 @@ jobs:
 
       - name: Terraform Init
         id: init
-        run: terraform init -backend-config backends/production.tfvars
-
-      - name: Terraform Plan
-        id: plan
-        run: terraform plan -var-file production.tfvars -out terraform.plan
+        run: terraform init -backend-config backends/${{ env.TF_WORKSPACE }}.tfvars
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve terraform.plan
+        run: terraform apply -var-file=${{ env.TF_WORKSPACE }}.tfvars -auto-approve
 
       - name: Get Beanstalk Environment
         run: terraform output -raw env_name

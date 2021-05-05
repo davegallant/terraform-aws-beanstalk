@@ -4,6 +4,8 @@ set -euxo pipefail
 
 dependencies=(pre-commit terraform)
 
+script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
 check_dependency() {
 	local dependency=$1
 	if ! command -v "$dependency" &>/dev/null; then
@@ -28,8 +30,13 @@ for d in "${dependencies[@]}"; do
 	fi
 done
 
+# Install pre-commit hooks
 pre-commit install
+
+echo "Cleaning up local teraform state"
+rm -rf "$script_dir/../.terraform"
 
 backend_config="${TF_BACKEND_CONFIG:-backends/staging.tfvars}"
 
+# Initialize the backend config
 terraform init -backend-config "$backend_config"
